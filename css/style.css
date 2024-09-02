@@ -1,0 +1,55 @@
+.sectJuego {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* tabla */
+table {
+  border-collapse: collapse;
+}
+td {
+  border: 1px solid black;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  font-size: xx-large;
+}
+
+/* modal */
+.modal {
+  display: none;
+  text-align: center;
+  /* position: fixed; */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+  background-color: #fefefe;
+  /* margin: 8rem auto; */
+  /* padding: 1.25rem; */
+  border: 1px solid #888;
+  /* width: 40%; */
+  height: auto;
+  border-radius: 0.5rem;
+  align-self: center;
+}
+
+/* boton aceptar */
+#aceptar {
+  width: 5rem;
+  height: 2rem;
+  background-color: #5bf362;
+  font-weight: bolder;
+  border: 2px solid black;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin: 1rem;
+}
+
+#aceptar:hover {
+  background-color: rgb(46, 155, 4);
+}
