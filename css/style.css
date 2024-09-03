@@ -1,7 +1,13 @@
+body{
+  background-color: #635A5A;
+}
 .sectJuego {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+h1{
+  font-size: xx-large;
 }
 
 /* tabla */
@@ -9,18 +15,19 @@ table {
   border-collapse: collapse;
 }
 td {
+  background-color: white;
   border: 1px solid black;
   width: 100px;
   height: 100px;
   text-align: center;
-  font-size: xx-large;
+  font-size: 5rem;
 }
 
 /* modal */
 .modal {
   display: none;
   text-align: center;
-  /* position: fixed; */
+  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
@@ -29,10 +36,10 @@ td {
 }
 .modal-content {
   background-color: #fefefe;
-  /* margin: 8rem auto; */
-  /* padding: 1.25rem; */
+  margin: 8rem auto;
+  padding: 1.25rem;
   border: 1px solid #888;
-  /* width: 40%; */
+  width: 40%;
   height: auto;
   border-radius: 0.5rem;
   align-self: center;
@@ -52,4 +59,10 @@ td {
 
 #aceptar:hover {
   background-color: rgb(46, 155, 4);
+}
+
+/* marcador */
+#marcador{
+  font-size: x-large;
+  font-weight: bolder;
 }

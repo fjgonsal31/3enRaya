@@ -21,12 +21,17 @@ const combinaciones = [
   [a1, b2, c3],
   [a3, b2, c1],
 ];
-let fin = null;
+let end = null;
 let indexArray = null;
 let botClic = null;
 const btnAceptar = document.getElementById("aceptar");
 const modal = document.getElementById("myModal");
 const resultado = document.getElementById("resultado");
+let count = 0;
+let marcador = document.getElementById("marcador");
+let botWin = 0;
+let userWin = 0;
+let nombreJug = prompt("¿Cómo te llamas?");
 
 // **************FUNCIONES**************
 
@@ -42,37 +47,36 @@ function resetCasillas() {
     element.style.backgroundColor = "";
     element.style.pointerEvents = "auto";
   });
-  fin = false;
+  end = false;
 }
 
-function updateCasillas() {
-  // recorro cada linea de combinacion
+function updateTable() {
   for (let i = 0; i < combinaciones.length; i++) {
-    let linea = [];
-    // recorro cada td por linea de combinacion y añado a linea
-    for (let j = 0; j < combinaciones[i].length; j++) {
-      linea.push(combinaciones[i][j]);
-    }
-
+    let linea = combinaciones[i];
     let l0 = linea[0].textContent;
     let l1 = linea[1].textContent;
     let l2 = linea[2].textContent;
-    //si hay 3 coincidencias
-    if (l0 === l1 && l1 === l2 && l0 !== "") {
-      fin = true;
 
-      if (linea[0].textContent === "X") {
-        eventModal("block", "¡Has ganado!");
-        linea[0].style.backgroundColor = "green";
-        linea[1].style.backgroundColor = "green";
-        linea[2].style.backgroundColor = "green";
-      } else if (linea[0].textContent === "O") {
+    if (l0 === l1 && l1 === l2 && l0 !== "") {
+      end = true;
+
+      if (l0 === "X") {
+        eventModal("block", "¡Has ganado!", 750);
+        linea.forEach((cell) => (cell.style.backgroundColor = "green"));
+        userWin++;
+      } else if (l0 === "O") {
         eventModal("block", "¡Has perdido!", 750);
-        linea[0].style.backgroundColor = "red";
-        linea[1].style.backgroundColor = "red";
-        linea[2].style.backgroundColor = "red";
+        linea.forEach((cell) => (cell.style.backgroundColor = "red"));
+        botWin++;
       }
+      showMarcador(nombreJug, userWin, botWin);
+      return;
     }
+  }
+
+  // Verificar empate si no hay fin y no hay celdas vacías
+  if (items.length === 0 && !end) {
+    eventModal("block", "¡Has empatado!", 750);
   }
 }
 
@@ -87,55 +91,91 @@ function eventModal(display = "", text = "", time = 0) {
     if (text !== "") {
       resultado.textContent = text;
     }
-    console.log("time");
   }, time);
 }
 
-// **************EJECUCION**************
-//recorro los td
-td.forEach((element) => {
-  // clic en alguna casilla
-  element.addEventListener("click", () => {
-    console.log("pre: " + items.length);
+// Iniciar el juego
+function initGame() {
+  resetCasillas();
+  items = [];
+  addItems();
 
-    // USER: si quedan huecos y no hay fin
-    if (items.length > 0 && !fin) {
+  if (count % 2 === 0) {
+    playTurn();
+  } else {
+    botPlay();
+  }
+}
+
+// Turno del usuario
+function playTurn() {
+  td.forEach((element) => {
+    if (element.textContent === "") {
+      element.style.pointerEvents = "auto";
+    }
+  });
+}
+
+// Turno del bot
+function botPlay() {
+  if (items.length === 0) return; // No hacer nada si no hay celdas vacías
+
+  indexArray = Math.floor(Math.random() * items.length);
+  botClic = document.getElementById(items[indexArray]);
+  botClic.style.color = "blue";
+  botClic.style.pointerEvents = "none";
+  botClic.textContent = "O";
+  items = items.filter((item) => item !== botClic.id); // Eliminar el id del bot de items
+  updateTable();
+
+  if (!end && items.length > 0) {
+    playTurn(); // Ahora es el turno del usuario
+  }
+}
+
+function showMarcador(user, cont1, cont2) {
+  marcador.textContent = `${user}: ${cont1} - ${cont2} :BOTin`;
+}
+
+// **************EJECUCION**************
+
+if (nombreJug) {
+  nombreJug = nombreJug.slice(0, 20);
+} else {
+  nombreJug = "User";
+}
+
+btnAceptar.addEventListener("click", () => {
+  count++;
+  eventModal("none", "");
+  initGame();
+});
+
+window.onclick = function (event) {
+  if (event.target === modal) {
+    modal.style.display = "none";
+    count++;
+    eventModal("none", "");
+    initGame();
+  }
+};
+
+// clic en cada celda
+td.forEach((element) => {
+  element.addEventListener("click", () => {
+    if (items.length > 0 && !end && element.textContent === "") {
       element.style.color = "black";
       element.style.pointerEvents = "none";
       items = items.filter((item) => item !== element.id); // Eliminar el id clicado de items
       element.textContent = "X";
-      updateCasillas();
+      updateTable();
+      if (!end && items.length > 0) {
+        botPlay();
+      }
     }
-
-    // BOT: si quedan huecos y no hay fin
-    if (items.length > 0 && !fin) {
-      indexArray = Math.floor(Math.random() * items.length);
-      botClic = document.getElementById(items[indexArray]);
-      botClic.style.color = "blue";
-      botClic.style.pointerEvents = "none";
-      items = items.filter((item) => item !== botClic.id); // Eliminar el id del bot de items
-      botClic.textContent = "O";
-      updateCasillas();
-    }
-    console.log(fin);
-    // si no quedan huecos y hay fin
-    if (items.length === 0 && !fin) {
-      eventModal("block", "¡Has empatado!");
-    }
-
-    console.log("post: " + items.length);
-    console.log("------------");
   });
 });
 
-// modal, clic en "Aceptar"
-btnAceptar.addEventListener("click", function () {
-  eventModal("none", "");
-  resetCasillas();
-  items = [];
-  addItems();
-});
-
+showMarcador(nombreJug, userWin, botWin);
 addItems();
-
-// revisar ganar en el último clic
+initGame();
